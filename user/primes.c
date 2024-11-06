@@ -4,6 +4,10 @@
 
 int main(int argc,char* argv[])
 {
+    if(argc != 1){
+        fprintf(2,"Error: primes failed...\n");
+        exit(1);
+    }
     int pip[2];
     pipe(pip);
     int x = 35;
@@ -15,19 +19,46 @@ int main(int argc,char* argv[])
     }
     if(pid == 0)
     {
-        read(pip[0],&x,sizeof(x));
-        helper(x);
+        close(0);
+        close(pip[1]);
+        helper(pip[0]);
     }
     else
     {
-        if(write(pip[1],&x,sizeof(x)) >= 0){}
+        close(pip[0]);
+        for(int i=2;i<=35;i++)
+            write(pip[1],&i,sizeof(x));
+        close(pip[1]);
         wait(0);
-
     }
 
     exit(0);
 }
-void helper(int x)
+void helper(int input)
 {
-
+    int prime;
+    if(read(input,&prime,sizeof(prime)) == 0)
+        return;
+    printf("prime %d\n",prime);
+    int pip[2];
+    pipe(pip);
+    int pid = fork();
+    if(pid == 0)
+    {
+        close(0);
+        close(pip[1]);
+        helper(pip[0]);
+    }
+    else
+    {
+        close(pip[0]);
+        int x;
+        while(read(input,&x,sizeof(x)) != 0){
+            if(x % prime == 0)
+                write(pip[1],&x,sizeof(x));
+        }
+        close(input);
+        close(pip[1]);
+        wait(0);
+    }
 }
