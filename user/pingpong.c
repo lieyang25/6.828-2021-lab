@@ -12,8 +12,8 @@ int main(int argc,char *argv[])
     pipe(p_to_c);
     pipe(c_to_p);
     char x = 'x';
-    int pid;
-    if(pid = fork() == -1){
+    int pid = fork();
+    if(pid == -1){
         fprintf(2,"Error: fork...\n");
         exit(1);
     }
@@ -36,7 +36,7 @@ int main(int argc,char *argv[])
             printf("%d: received pong\n",pid);
         }
     }
-    close(p_to_c);
-    close(c_to_p);
+    close(p_to_c[1]);
+    close(c_to_p[0]);
     exit(0);
 }
