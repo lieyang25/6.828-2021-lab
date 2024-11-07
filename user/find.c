@@ -3,14 +3,20 @@
 #include "user/user.h"
 #include "kernel/fs.h"
 
+void helper(char* path,char*target);
+
 int main(int argc,char* argv[])
 {
-    
+    helper(argv[1],argv[2]);
+    exit(0);
+}
+
+void helper(char* path,char*target)
+{
     char buf[512], *p;
     int fd;
     struct dirent de;
     struct stat st;
-
     if((fd = open(path, 0)) < 0){
         fprintf(2, "ls: cannot open %s\n", path);
         return;
@@ -23,7 +29,8 @@ int main(int argc,char* argv[])
     }
     switch(st.type){
     case T_FILE:
-        printf("./\n", fmtname(path), st.type, st.ino, st.size);
+        if(strcmp(fmtname(path),target))
+            printf("%s/%s\n", path,target);
         break;
 
     case T_DIR:
@@ -32,21 +39,17 @@ int main(int argc,char* argv[])
             break;
         }
         strcpy(buf, path);
+
         p = buf+strlen(buf);
         *p++ = '/';
         while(read(fd, &de, sizeof(de)) == sizeof(de)){
-        if(de.inum == 0)
-            continue;
-        memmove(p, de.name, DIRSIZ);
-        p[DIRSIZ] = 0;
-        if(stat(buf, &st) < 0){
-            printf("ls: cannot stat %s\n", buf);
-            continue;
+            if(de.inum == 0)
+                continue;
+            memmove(p, de.name, DIRSIZ);
+            p[DIRSIZ] = 0;
+            helper(buf,target);
         }
-        printf("%s %d %d %d\n", fmtname(buf), st.type, st.ino, st.size);
+        break;
     }
-    break;
-  }
     close(fd);
-    exit(0);
 }
