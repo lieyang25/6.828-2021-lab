@@ -99,5 +99,5 @@ sys_uptime(void)
 void
 sys_trace(void)
 {
-  
+  printf("%d: syscall %s -> %d\n",myproc()->pid,myproc()->name,myproc()->trapframe->a0);
 }
