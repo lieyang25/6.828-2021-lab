@@ -6,6 +6,7 @@
 #include "proc.h"
 #include "syscall.h"
 #include "defs.h"
+#include "sysinfo.h"
 
 // Fetch the uint64 at addr from the current process.
 int
@@ -105,7 +106,7 @@ extern uint64 sys_wait(void);
 extern uint64 sys_write(void);
 extern uint64 sys_uptime(void);
 extern uint64 sys_trace(void);
-extern uint64 sys_sysinfo(void);
+extern uint64 sys_sysinfo(struct sysinfo*);
 
 static uint64 (*syscalls[])(void) = {
 [SYS_fork]    sys_fork,

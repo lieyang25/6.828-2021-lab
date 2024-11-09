@@ -23,6 +23,19 @@ struct {
   struct run *freelist;
 } kmem;
 
+//可用字节
+uint64
+kfreeBytes()
+{
+  struct run *run;
+  uint64 count = 0;
+  run = kmem.freelist;
+  while(run){
+    run = run->next;
+  }
+  return count;
+}
+
 void
 kinit()
 {
