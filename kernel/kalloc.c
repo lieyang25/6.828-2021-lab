@@ -27,13 +27,16 @@ struct {
 uint64
 kfreeBytes()
 {
+  acquire(&kmem.lock);
   struct run *run;
   uint64 count = 0;
   run = kmem.freelist;
   while(run){
+    count ++;
     run = run->next;
   }
-  return count;
+  release(&kmem.lock);
+  return count * PGSIZE;
 }
 
 void
