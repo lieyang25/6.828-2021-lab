@@ -82,6 +82,8 @@ sys_pgaccess(void)
 {
   //系统调用时会将参数传入寄存器a0-a2,可以同通过访问寄存器来获得参数
   //walk函数会遍历页表，通过walk函数来遍历，并用PTEA来检测是否使用
+  //bitmap共可以检测64个
+  
   // lab pgtbl: your code here.
   //先提取一下参数
   struct proc* p =myproc();
