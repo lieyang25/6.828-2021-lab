@@ -80,6 +80,8 @@ sys_sleep(void)
 int
 sys_pgaccess(void)
 {
+  //系统调用时会将参数传入寄存器a0-a2,可以同通过访问寄存器来获得参数
+  //walk函数会遍历页表，通过walk函数来遍历，并用PTEA来检测是否使用
   // lab pgtbl: your code here.
   //先提取一下参数
   struct proc* p =myproc();
@@ -98,7 +100,7 @@ sys_pgaccess(void)
   uint64 complement=PTE_A;
   complement=~complement;
   int count=0;
-  
+
   for(uint64 page =usrpge_ptr;page<usrpge_ptr+npage*PGSIZE;page+=PGSIZE)
   {
     pte_t* pte = walk(p->pagetable,page,0);
