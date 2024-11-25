@@ -133,15 +133,11 @@ printfinit(void)
   pr.locking = 1;
 }
 
-void
-backtrace(void)
-{
+void backtrace() {
   uint64 fp = r_fp();
-  printf("backtrace:\n");
-  while(fp != PGROUNDDOWN(fp))
-  {
-    uint64 temp = fp + 8;
-    printf("%p",temp);
-    fp = fp + 16;
+  while(fp != PGROUNDUP(fp)) { // 如果已经到达栈底
+    uint64 ra = *(uint64*)(fp - 8); // return address
+    printf("%p\n", ra);
+    fp = *(uint64*)(fp - 16); // previous fp
   }
 }
